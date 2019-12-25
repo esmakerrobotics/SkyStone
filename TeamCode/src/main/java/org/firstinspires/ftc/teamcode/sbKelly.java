@@ -75,7 +75,7 @@ public class sbKelly extends LinearOpMode {
         servo = hardwareMap.servo.get("servo");
         waitForStart();
         while (opModeIsActive()) {
-            //running gear control start
+            //Bogie control start
             /*
             leftFwd.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
             leftAft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
@@ -87,7 +87,7 @@ public class sbKelly extends LinearOpMode {
             rightFwd.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
             rightAft.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
 
-            //servo control start
+            //Servo control start
             if (gamepad1.left_bumper) {
                 servo.setPosition(servo.getPosition() + 0.001);
             } else if (gamepad1.right_bumper) {

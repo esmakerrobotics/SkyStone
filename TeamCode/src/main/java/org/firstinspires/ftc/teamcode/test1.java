@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Basic: Linear OpMode")
 //@Disabled
 //Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
-public class sbKelly extends LinearOpMode {
-
+public class test1 extends LinearOpMode {
     //Declare OpMode members.
     //private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFwd = null;
@@ -22,7 +18,7 @@ public class sbKelly extends LinearOpMode {
     private DcMotor rightAft = null;
     private Servo servo = null;
     //个性化控制参数
-    //private double pivotTurnActiveThreshold = 0.0; //转向模式未合并，见test
+    private double pivotTurnActiveThreshold = 0.0;
     private double servoIncrement = 0.005;
 
     @Override
@@ -46,13 +42,24 @@ public class sbKelly extends LinearOpMode {
         rightFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         servo = hardwareMap.servo.get("servo");
+
         waitForStart();
         while (opModeIsActive()) {
-            //Bogie control start
-            leftFwd.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
-            leftAft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
-            rightFwd.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
-            rightAft.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
+            if (Math.abs(gamepad1.left_stick_y) <= pivotTurnActiveThreshold) { //纵轴杆量少于一定值时进入原地转向模式 //按需修改
+                leftFwd.setPower(gamepad1.left_stick_x);
+                leftAft.setPower(gamepad1.left_stick_x);
+                rightFwd.setPower(-gamepad1.left_stick_x);
+                rightAft.setPower(-gamepad1.left_stick_x);
+            } else if (gamepad1.left_stick_x < 0) { //若不在原地转向模式，则判断杆输入的方向并转向，此处为左转条件 //转向方案为纵横相减
+                leftFwd.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+                leftAft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+                rightFwd.setPower(gamepad1.left_stick_y );
+                rightAft.setPower(gamepad1.left_stick_y);
+            } else { //否则右转 //无转向输入则直行
+                leftFwd.setPower(gamepad1.left_stick_y );
+                leftAft.setPower(gamepad1.left_stick_y);
+                rightFwd.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x);
+                rightAft.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x);
 
             //Servo control start
             if (gamepad1.left_bumper) {
@@ -61,5 +68,9 @@ public class sbKelly extends LinearOpMode {
                 servo.setPosition(servo.getPosition() - servoIncrement);
             }
         }
+    }
+
+    //private void pingyi(float power) {
+
     }
 }

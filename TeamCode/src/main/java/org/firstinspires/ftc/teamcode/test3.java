@@ -6,9 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Basic: Linear OpMode")
-//@Disabled
-//Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+@TeleOp(name = "test3")
 public class test3 extends LinearOpMode {
     //Declare OpMode members.
     //private ElapsedTime runtime = new ElapsedTime();
@@ -44,43 +42,17 @@ public class test3 extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            /*!--------------------------Rework Bogie Control--------------------------!*/
-            //感谢 Wargaming.net 对转向逻辑的大力支持/滑稽
-            if (gamepad1.left_stick_y == 0) { //原地转向
-                leftFwd.setPower(gamepad1.left_stick_x);
-                leftAft.setPower(gamepad1.left_stick_x);
-                rightFwd.setPower(-gamepad1.left_stick_x);
-                rightAft.setPower(-gamepad1.left_stick_x);
-            } else {
-                if (gamepad1.left_stick_y > 0 && gamepad1.left_stick_x < 0) { //前左转，右侧向前
-                    rightFwd.setPower(-gamepad1.left_stick_x);
-                    rightAft.setPower(-gamepad1.left_stick_x);
-                } else if (gamepad1.left_stick_y > 0 && gamepad1.left_stick_x > 0) { //前右转，左侧向前
-                    leftFwd.setPower(gamepad1.left_stick_x);
-                    leftAft.setPower(gamepad1.left_stick_x);
-                } else if (gamepad1.left_stick_y < 0 && gamepad1.left_stick_x < 0) { //后左转，右侧向后
-                    rightFwd.setPower(gamepad1.left_stick_x);
-                    rightAft.setPower(gamepad1.left_stick_x);
-                } else if (gamepad1.left_stick_y < 0 && gamepad1.left_stick_x > 0) { //后右转，左侧向后
-                    leftFwd.setPower(-gamepad1.left_stick_x);
-                    leftAft.setPower(-gamepad1.left_stick_x);
-                } //gamepad1.left_stick_x == 0，直行
-                leftFwd.setPower(gamepad1.left_stick_y);
-                leftAft.setPower(gamepad1.left_stick_y);
-                rightFwd.setPower(gamepad1.left_stick_y);
-                rightAft.setPower(gamepad1.left_stick_y);
-            }
-
+            //若y不为0，trigger制动转向，否则差速转向
             //Servo control start
             if (gamepad1.left_bumper) {
                 servo.setPosition(servo.getPosition() + servoIncrement);
             } else if (gamepad1.right_bumper) {
                 servo.setPosition(servo.getPosition() - servoIncrement);
             }
-            //private void pingyi(float power) {}
         }
     }
 }
+
 /*if 0<=stick.x<=0.5
     x = 2x^2
     else

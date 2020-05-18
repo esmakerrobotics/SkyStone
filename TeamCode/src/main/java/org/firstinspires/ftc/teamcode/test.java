@@ -6,9 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.math.MathContext;
-
-@TeleOp(name = "Basic: Linear OpMode")
+@TeleOp(name = "test")
 //@Disabled
 //Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 public class test extends LinearOpMode {

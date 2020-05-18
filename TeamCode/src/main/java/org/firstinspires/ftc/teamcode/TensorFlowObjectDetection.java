@@ -27,17 +27,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import java.util.List;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -49,13 +52,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-@Disabled
-public class ConceptTensorFlowObjectDetection extends LinearOpMode {
-    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
-    private static final String LABEL_FIRST_ELEMENT = "Stone";
-    private static final String LABEL_SECOND_ELEMENT = "Skystone";
-
+@TeleOp(name = "TensorFlow Object Detection")
+//@Disabled
+public class TensorFlowObjectDetection extends LinearOpMode {
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -69,7 +68,14 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AfhpzhP/////AAABmWpOp7rtYEoes1g3wj7bPI4L0Jls+TMmn8fjAnUlZAhdwXL9h4LyA+30A8Qch/pPnu8sn/qBrmlvX3GRdKZNbo/3nXYdKEYHIHm8/qjQ5s1yiOFl+pIismEZL5TtwktL4q5YQYM/QGswVQ45cjdTxAFa1l/hUfUKU9ZFWaCmEnKgVP/UQppibFhNcGNHdokLv7gg0ir6jD/RC8tiUcHhmzq6u8235o5O2Fp48c6Fnx1BaaieQqS3ioF8iDotmhkpPtvdsCU954klb3K2bOidLIxFyQkyL0SqdWdJc/6zhbgoyT3GNhqH7v7A0gfAIVCnrYnA+gUuV24yRpuXeo/ITCcGYsbOLk9kuIEqq+d3ke/O";
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private DcMotor leftFwd = null;
+    private DcMotor leftAft = null;
+    private DcMotor rightFwd = null;
+    private DcMotor rightAft = null;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -85,16 +91,34 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        //配置车车
+        leftFwd = hardwareMap.dcMotor.get("leftFwd");
+        leftAft = hardwareMap.dcMotor.get("leftAft");
+        rightFwd = hardwareMap.dcMotor.get("rightFwd");
+        rightAft = hardwareMap.dcMotor.get("rightAft");
+        leftFwd.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftAft.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFwd.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftAft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFwd.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightAft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFwd.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftAft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFwd.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightAft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //结束配置车车
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
-
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
-
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -102,31 +126,33 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         if (tfod != null) {
             tfod.activate();
         }
-
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
+            boolean SkystoneFound = false;
+            while (opModeIsActive() && !SkystoneFound) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
-
                       // step through the list of recognitions and display boundary info.
                       int i = 0;
                       for (Recognition recognition : updatedRecognitions) {
                         telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                          telemetry.addData(String.format("  left,top (%d)", i), "%.01f , %.01f",//此处输出一位小数的浮点数，下同
                                           recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                          telemetry.addData(String.format("  right,bottom (%d)", i), "%.01f , %.01f",
                                 recognition.getRight(), recognition.getBottom());
                       }
                       telemetry.update();
+                        //以上是数据显示部分
+
+                        //以下是自动控制部分
+
                     }
                 }
             }

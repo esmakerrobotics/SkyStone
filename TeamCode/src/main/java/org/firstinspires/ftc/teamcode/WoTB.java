@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Basic: Linear OpMode")
+@TeleOp(name = "WoTB")
 //@Disabled
 //Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 public class WoTB extends LinearOpMode {
@@ -16,7 +15,7 @@ public class WoTB extends LinearOpMode {
     private DcMotor leftAft = null;
     private DcMotor rightFwd = null;
     private DcMotor rightAft = null;
-    private Servo servo = null;
+    //private Servo servo = null;
     //个性化控制参数
     private double servoIncrement = 0.005;
 
@@ -40,7 +39,7 @@ public class WoTB extends LinearOpMode {
         leftAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        servo = hardwareMap.servo.get("servo");
+        //servo = hardwareMap.servo.get("servo");
 
         waitForStart();
         while (opModeIsActive()) {
@@ -72,12 +71,14 @@ public class WoTB extends LinearOpMode {
             }
 
             //Servo control start
-            if (gamepad1.left_bumper) {
+            /*if (gamepad1.left_bumper) {
                 servo.setPosition(servo.getPosition() + servoIncrement);
-            } else if (gamepad1.right_bumper) {
+            //} else if (gamepad1.right_bumper) {
                 servo.setPosition(servo.getPosition() - servoIncrement);
             }
             //private void pingyi(float power) {}
+
+             */
         }
     }
 }

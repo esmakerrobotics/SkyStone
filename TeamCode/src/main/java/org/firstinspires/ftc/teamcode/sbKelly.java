@@ -17,9 +17,6 @@ public class sbKelly extends LinearOpMode {
     private DcMotor rightFwd = null;
     private DcMotor rightAft = null;
     //private Servo servo = null;
-    //个性化控制参数
-    //private double pivotTurnActiveThreshold = 0.0;
-    private double servoIncrement = 0.005;
 
     @Override
     public void runOpMode() {

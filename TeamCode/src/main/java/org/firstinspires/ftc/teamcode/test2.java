@@ -41,7 +41,7 @@ public class test2 extends LinearOpMode {
         leftAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        servo = hardwareMap.servo.get("servo");
+        //servo = hardwareMap.servo.get("servo");
 
         waitForStart();
         while (opModeIsActive()) {
@@ -65,12 +65,14 @@ public class test2 extends LinearOpMode {
             }
 
 
-            //Servo control start
+            /*Servo control start
             if (gamepad1.left_bumper) {
                 servo.setPosition(servo.getPosition() + servoIncrement);
             } else if (gamepad1.right_bumper) {
                 servo.setPosition(servo.getPosition() - servoIncrement);
             }
+
+             */
         }
     }
 

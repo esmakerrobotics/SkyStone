@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "test")
 //@Disabled
@@ -16,7 +15,7 @@ public class test extends LinearOpMode {
     private DcMotor leftAft = null;
     private DcMotor rightFwd = null;
     private DcMotor rightAft = null;
-    private Servo servo = null;
+    //private Servo servo = null;
     //个性化控制参数
     private double pivotTurnActiveThreshold = 0.0;
     private double servoIncrement = 0.005;
@@ -41,7 +40,7 @@ public class test extends LinearOpMode {
         leftAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFwd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightAft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        servo = hardwareMap.servo.get("servo");
+        //servo = hardwareMap.servo.get("servo");
 
         waitForStart();
         while (opModeIsActive()) {
@@ -62,12 +61,13 @@ public class test extends LinearOpMode {
                 rightFwd.setPower(gamepad1.left_stick_y);
                 rightAft.setPower(gamepad1.left_stick_y);
 
-            //Servo control start
+            /*Servo control start
             if (gamepad1.left_bumper) {
                 servo.setPosition(servo.getPosition() + servoIncrement);
             } else if (gamepad1.right_bumper) {
                 servo.setPosition(servo.getPosition() - servoIncrement);
             }
+             */
         }
     }
 

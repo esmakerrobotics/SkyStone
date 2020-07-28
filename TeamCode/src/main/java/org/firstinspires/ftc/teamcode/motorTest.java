@@ -23,6 +23,7 @@ public class motorTest extends LinearOpMode {
     private DcMotor rightPliers;
     private DcMotor pushBrick;
 
+
     @Override
     public void runOpMode() {
         //maneuver
@@ -30,8 +31,11 @@ public class motorTest extends LinearOpMode {
         leftAft = hardwareMap.dcMotor.get("leftAft");
         rightFwd = hardwareMap.dcMotor.get("rightFwd");
         rightAft = hardwareMap.dcMotor.get("rightAft");
-        leftFwd.setDirection(DcMotorSimple.Direction.REVERSE); //Exclusively for left side motors,
-        leftAft.setDirection(DcMotorSimple.Direction.REVERSE); //Do Not merge into DcMotor[] motors!
+        rightFwd.setDirection(DcMotorSimple.Direction.REVERSE); //Exclusively for left side motors,
+        rightAft.setDirection(DcMotorSimple.Direction.REVERSE); //Do Not merge into DcMotor[] motors!
+        leftRoller = hardwareMap.dcMotor.get("leftRoller");
+        rightRoller = hardwareMap.dcMotor.get("rightRoller");
+        rightRoller.setDirection(DcMotorSimple.Direction.REVERSE);
         DcMotor[] motors = {leftFwd, leftAft, rightFwd, rightAft/*, elev*/};
         for (DcMotor runMode : motors) {
             runMode.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -50,17 +54,18 @@ public class motorTest extends LinearOpMode {
         leftPliers.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightPliers.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         */
+
         waitForStart();
         while (opModeIsActive()) {
             //maneuver
-            leftFwd.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
-            leftAft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
-            rightFwd.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
-            rightAft.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
+            leftFwd.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
+            leftAft.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
+            rightFwd.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y + gamepad1.right_stick_x);
+            rightAft.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_y - gamepad1.right_stick_x);
 
             //rollers
-            //leftRoller.setPower(0.5);
-            //rightRoller.setPower(0.5);
+            leftRoller.setPower(0.5);
+            rightRoller.setPower(0.5);
         }
     }
 

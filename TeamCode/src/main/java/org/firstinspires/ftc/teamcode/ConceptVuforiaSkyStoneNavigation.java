@@ -107,26 +107,26 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            "AfhpzhP/////AAABmWpOp7rtYEoes1g3wj7bPI4L0Jls+TMmn8fjAnUlZAhdwXL9h4LyA+30A8Qch/pPnu8sn/qBrmlvX3GRdKZNbo/3nXYdKEYHIHm8/qjQ5s1yiOFl+pIismEZL5TtwktL4q5YQYM/QGswVQ45cjdTxAFa1l/hUfUKU9ZFWaCmEnKgVP/UQppibFhNcGNHdokLv7gg0ir6jD/RC8tiUcHhmzq6u8235o5O2Fp48c6Fnx1BaaieQqS3ioF8iDotmhkpPtvdsCU954klb3K2bOidLIxFyQkyL0SqdWdJc/6zhbgoyT3GNhqH7v7A0gfAIVCnrYnA+gUuV24yRpuXeo/ITCcGYsbOLk9kuIEqq+d3ke/O"; // vuforiaLicenseKey
+            "AXEwc2D/////AAABmZDMjmlTdE8zgqvFJ9afXsR4nV1wgtCkIDumrcmtJivElhWcRB6aUelhJDXjGrINKadj125lgXlo6QBI9IQgxJumqx1h4Li7oFNzilNMHarkwR7nkUnxA/x7GEFqim90dmgN1+VvbRiPtyPIxQDTqaVym3FZpcjx6r7EA3kKXGxPMq1ilM+jcVq4vD15RVDLrVzbOG1kkI09Gf/BgwPeuaZeaLTZaDlIvOPRdCEfM80Bh8HvKZdBHv5p59rtFS6ozC+9dVATazrx9X4007UiLkZ9QBOg+/UBSo4bWtkW5yjQczFcedxznEoNyI/ULwUsLt637W/HKQBlGUVty2t7TpIDdFvM10asyz/l9N0jzCk9"; // vuforiaLicenseKey
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch = 25.4f;
-    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmTargetHeight = (6);          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
-    private static final float stoneZ = 2.00f * mmPerInch;
+    private static final float stoneZ = 2.00f;
 
     // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
+    private static final float bridgeZ = 6.42f;
+    private static final float bridgeY = 23;
+    private static final float bridgeX = 5.18f;
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
     // Constants for perimeter targets
-    private static final float halfField = 72 * mmPerInch;
-    private static final float quadField = 36 * mmPerInch;
+    private static final float halfField = 72;
+    private static final float quadField = 36;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
@@ -292,8 +292,8 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
@@ -311,11 +311,12 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        // waitForStart();
+//         waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
+        Moving moving = new Moving(hardwareMap);
 
         targetsSkyStone.activate();
         while (!isStopRequested()) {
@@ -343,6 +344,13 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+                if (opModeIsActive()) {
+                    if (translation.get(0) < -2.3)
+                        moving.panX(0.5);
+                } else if (translation.get(0) > -2.7) {
+                    moving.panX(-0.5);
+                } else moving.panY(0.5);
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
